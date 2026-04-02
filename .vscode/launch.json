@@ -4,7 +4,7 @@
           "name": "GDB",
           "type": "cppdbg",
           "request": "launch",
-          "program": "${workspaceFolder}/Build/final.elf",
+          "program": "${workspaceFolder}/Project/final.elf",
           "args": [],
           "stopAtEntry": true,
           "cwd": "${workspaceFolder}",
