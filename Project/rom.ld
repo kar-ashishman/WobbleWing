@@ -1,13 +1,38 @@
+/* Entry point for Debugger */
+ENTRY(reset_hdlr)
+
+/* name(attr) : ORIGIN/org = 0x... , LENGTH/len = 0x....; */
+/* attributes are R readonly, W readwrite, X executable, A allocated */
+
 MEMORY {
-    FLASH(xr) : ORIGIN = 0x00000000, LENGTH = 50K
-    SRAM(xrw) : ORIGIN = 0x20000000, LENGTH = 8K
+    FLASH(rx) : org = 0x00000000, len = 50K
+    SRAM(rwx) : org = 0x20000000, len = 128K
 }
 
+/* >(VMA) AT>(LMA) - VMA where loader loads data to execute */
+/* location counter . always tracks VMA not LMA */
+/* ALIGN aligns address to boundary */
 SECTIONS {
     .text : {
-        startup.o (.vector_table)
+        *(.vector_table)
         *(.text)
+        *(.rodata)
         . = ALIGN(4);
-        _etext = .;
+        _etext = ABSOLUTE(.);
     }>FLASH
+
+    .data : {
+        _sdata = ABSOLUTE(.);
+        *(.data)
+        . = ALIGN(4);
+        _edata = ABSOLUTE(.);
+    }>SRAM AT>FLASH
+
+    .bss : {
+        _sbss = ABSOLUTE(.);
+        *(.bss)
+        *(COMMON)
+        . = ALIGN(4);
+        _ebss = ABSOLUTE(.);
+    } > SRAM
 }
