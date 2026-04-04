@@ -2,6 +2,9 @@
 #include "task.h"
 #include <stdint.h>
 
+
+#include <hal_proto.h>
+
 /* linker memory maps */
 extern uint32_t _etext;
 extern uint32_t _sdata;
@@ -43,20 +46,26 @@ void *memset(void *s, int c, int n) {
 }
 
 void vMyTaskFunction(void *pvParameters) {
+    uint8_t hours, minutes, seconds;
     for(;;) {
         // Task code goes here
+        rtc_get_time(&hours, &minutes, &seconds);
     }
 }
 
 void vMyTaskFunction2(void *pvParameters) {
+    uint8_t hours, minutes, seconds;
     for(;;) {
         // Task code goes here
+        rtc_get_time(&hours, &minutes, &seconds);
     }
 }
 
 
 int main(void) {
     // 1. Initialize hardware here
+    // Initialize the RTC
+    rtc_init();
 
     // Set NVIC priority grouping: 4 bits for preemption priority, 0 bits for subpriority (PRIGROUP = 0)
     SetPriorityGrouping(0);
