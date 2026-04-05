@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 
-#include <hal_proto.h>
+#include <hal_rtc_proto.h>
 
 /* linker memory maps */
 extern uint32_t _etext;

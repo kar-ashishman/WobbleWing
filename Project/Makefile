@@ -6,15 +6,21 @@ BOARD = netduinoplus2
 INCLUDE = -I ./HAL/Include -I ../FreeRTOS/Include
 ARCHIVES = ../FreeRTOS/FreeRTOS.a ./HAL/hal.a
 CFLAGS = -mthumb -mcpu=$(CPU) -g -c $(INCLUDE) -Wall -mfpu=fpv4-sp-d16 -mfloat-abi=hard -g -c
-LDFLAGS = -T rom.ld -Map=final.map
+LDFLAGS_QEMU = -T rom_qemu.ld -Map=final_qemu.map
+LDFLAGS_TARGET = -T rom_target.ld -Map=final.map
 
 SRC = startup.c
 OBJ = $(patsubst %.c,%.o,$(SRC))
 
-final.elf : $(OBJ) rom.ld
-	$(LD) $(LDFLAGS) -o $@ $(OBJ) $(ARCHIVES)
-	arm-none-eabi-objdump -D -S final.elf > final.elf.lst
-	arm-none-eabi-readelf -a final.elf > final.elf.debug
+final.elf : $(OBJ) rom_target.ld
+	$(LD) $(LDFLAGS_TARGET) -o $@ $(OBJ) $(ARCHIVES)
+	arm-none-eabi-objdump -D -S $@ > final.elf.lst
+	arm-none-eabi-readelf -a $@ > final.elf.debug
+
+final_qemu.elf : $(OBJ) rom_qemu.ld
+	$(LD) $(LDFLAGS_QEMU) -o $@ $(OBJ) $(ARCHIVES)
+	arm-none-eabi-objdump -D -S $@ > final_qemu.elf.lst
+	arm-none-eabi-readelf -a $@ > final_qemu.elf.debug
 
 %.o : %.c
 	$(CC) $(CFLAGS) $< -o $@
